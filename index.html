@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Encuentros Angular</title>
+<meta name="description" content="Delegaciones de cada sábado para el equipo de Encuentros Angular.">
+<meta name="theme-color" content="#59270e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Encuentros Angular">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Layout: una columna tipo "pizarra de turnos" pensada para el teléfono; cabecera fija con la semana y pestañas abajo del título */
+:root{
+  --paper:#f3f5f1; --card:#ffffff; --ink:#18323a; --muted:#5d7178; --line:#d9e0dc;
+  --accent:#1f6d63; --accent-ink:#ffffff; --accent-soft:#e1efe9; --mark:#f2c94c; --mark-soft:#fbf1cf;
+  --danger:#b3412f; --on-mark:#2b2410;
+  --display:"Archivo",system-ui,sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111a1d; --card:#192428; --ink:#e6eeec; --muted:#93a6a9; --line:#2a383c;
+  --accent:#55b3a3; --accent-ink:#0d1a1c; --accent-soft:#1d3532; --mark:#e9c25a; --mark-soft:#3a3320; --danger:#e57a66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111a1d; --card:#192428; --ink:#e6eeec; --muted:#93a6a9; --line:#2a383c;
+  --accent:#55b3a3; --accent-ink:#0d1a1c; --accent-soft:#1d3532; --mark:#e9c25a; --mark-soft:#3a3320; --danger:#e57a66; color-scheme:dark}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:var(--body);font-size:16px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:620px;margin:0 auto;padding-block:16px 48px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:1.55rem;font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.1rem;font-weight:700}
+.eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px;border-radius:6px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px 8px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:6px;overflow-x:auto}
+.tab{padding:7px 14px;border-radius:999px;font-weight:700;font-size:.92rem;color:var(--muted);white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.weekbar{display:flex;align-items:center;gap:8px}
+.weekbar .lbl{flex:1;min-width:0;text-align:center}
+.weekbar .lbl b{font-family:var(--display);font-size:1.08rem;display:block}
+.weekbar .lbl span{font-size:.85rem;color:var(--muted)}
+.navbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:1.2rem;font-weight:700;flex:none}
+.today{font-size:.78rem;font-weight:700;color:var(--accent);padding:2px 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.mine{background:var(--mark-soft);border-color:var(--mark)}
+.mine ul{margin:6px 0 0;padding-left:20px}
+.list{display:flex;flex-direction:column;gap:10px}
+.task{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.task h3{font-size:1.02rem;font-weight:700}
+.task .detail{grid-column:1/-1;font-size:.92rem;color:var(--muted);white-space:pre-wrap}
+.task .who{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.task.me{border-color:var(--mark);box-shadow:inset 4px 0 0 var(--mark)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;background:var(--accent-soft);font-size:.9rem;font-weight:700}
+.chip.empty{padding:4px 10px;background:transparent;border:1px dashed var(--line);color:var(--muted);font-weight:400}
+.dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;color:#fff;font-family:var(--display);font-weight:800;flex:none}
+.tag{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:6px;background:var(--mark-soft);color:var(--ink);border:1px solid var(--mark)}
+.edit{font-size:.85rem;font-weight:700;color:var(--accent);padding:4px 2px}
+.btn{padding:10px 16px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.who-pick{display:flex;flex-wrap:wrap;gap:6px}
+.pick{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.9rem}
+.pick[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.note{display:flex;flex-direction:column;gap:4px}
+.note p{margin:0;white-space:pre-wrap}
+.note time{font-size:.8rem;color:var(--muted)}
+input[type=text],textarea{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper)}
+textarea{min-height:80px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700}
+.ed-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;padding-block:10px;border-top:1px solid var(--line)}
+.ed-item:first-child{border-top:0}
+.ed-item > div{min-width:0;display:flex;flex-direction:column;gap:6px}
+.x{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);color:var(--danger);font-weight:700}
+.switch{display:flex;gap:10px;align-items:flex-start}
+.switch input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.sheet-bg{position:fixed;inset:0;background:rgba(10,20,22,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:620px;border-radius:18px 18px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px;max-height:85vh;overflow:auto;box-sizing:border-box}
+.status{font-size:.85rem;color:var(--muted);min-height:1.2em}
+.empty-state{text-align:center;padding:28px 16px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.hero{display:flex;flex-direction:column;gap:10px}
+.team{font-family:var(--display);font-weight:700;color:var(--muted);text-align:center;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase}
+.satrow{display:flex;align-items:center;gap:10px}
+.sat{flex:1;min-width:0;background:var(--mark);color:var(--on-mark);border-radius:20px;padding:16px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
+.satday{font-size:.8rem;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.sat b{font-family:var(--display);font-size:clamp(1.7rem,8vw,2.3rem);font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.satnote{font-size:.85rem;font-weight:700;opacity:.8}
+.satnote button{color:inherit;text-decoration:underline;font-weight:700;padding:2px 4px}
+select{width:100%;box-sizing:border-box;padding:12px 14px;font-size:1.1rem;border-radius:12px;border:1px solid var(--line);background:var(--paper)}
+.pickme{display:flex;flex-direction:column;gap:8px}
+.hint{text-align:center;color:var(--muted);margin:4px 0}
+.deleg{display:flex;flex-direction:column;gap:6px;border-left:5px solid var(--accent)}
+.deleg h3{font-size:1.25rem;font-weight:800;display:flex;align-items:center;gap:12px}
+.ico{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--mark-soft);font-size:1.6rem;line-height:1}
+.tname{display:flex;flex-direction:column;gap:2px;min-width:0}
+.arrive{font-family:var(--body);font-size:.82rem;font-weight:400;color:var(--muted)}
+.arrive b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.timef{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700}
+.timef input{padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--paper)}
+.satev{margin-top:6px;background:var(--on-mark);color:var(--mark);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:800;letter-spacing:.02em}
+.satdet{font-size:.85rem;font-weight:700;margin-top:4px}
+.lbl{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--mark-soft);border:1px solid var(--mark);color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.event{background:var(--mark-soft);border-color:var(--mark)}
+.event b{font-family:var(--display);font-size:1.1rem}
+.foot{font-size:.78rem;color:var(--muted);text-align:center}
+.foot a{color:var(--accent)}
+.unk{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ico.sm{width:30px;height:30px;border-radius:9px;font-size:1.05rem}
+.mini h3{display:flex;align-items:center;gap:8px}
+.icopick{display:flex;flex-wrap:wrap;gap:6px}
+.icopick button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:1.3rem;line-height:1}
+.icopick button[aria-pressed="true"]{border:2px solid var(--accent);background:var(--accent-soft)}
+.deleg .desc{margin:0;font-size:.86rem;line-height:1.45;color:var(--muted);white-space:pre-wrap}
+.how{border-top:1px solid var(--line);padding-top:8px}
+.how summary{cursor:pointer;font-size:.9rem;font-weight:700;color:var(--accent);padding:4px 0;list-style:none;display:flex;align-items:center;gap:6px}
+.how summary::-webkit-details-marker{display:none}
+.how summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+.how[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.how .desc{margin-top:6px}
+.deleg .with{margin:0;font-size:.8rem;color:var(--muted)}
+.deleg .with b{color:var(--ink);font-weight:700}
+details.all{border-top:1px solid var(--line);padding-top:12px}
+details.all summary{cursor:pointer;font-weight:700;color:var(--accent);padding:6px 0;list-style-position:inside}
+details.all .list{margin-top:10px}
+.mini{display:flex;flex-direction:column;gap:6px;padding:12px 14px}
+.mini .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mini h3{font-size:.98rem}
+.mini .who{display:flex;flex-wrap:wrap;gap:6px}
+.mini.me{border-color:var(--mark);box-shadow:inset 4px 0 0 var(--mark)}
+@media (prefers-reduced-motion: no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
+
+.loading{text-align:center;color:var(--muted);padding:24px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero" id="hero">
+    <span class="team" id="teamName">Encuentros Angular</span>
+    <div class="satrow">
+      <button class="navbtn" id="prev" aria-label="Sábado anterior">‹</button>
+      <div class="sat"><span class="satday">Sábado</span><b id="satDate"></b><span class="satnote" id="satNote"></span><span class="satev" id="satEv" hidden></span><span class="satdet" id="satDet" hidden></span></div>
+      <button class="navbtn" id="next" aria-label="Sábado siguiente">›</button>
+    </div>
+  </header>
+  <main id="view"><p class="loading">Cargando delegaciones…</p></main>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script type="application/json" id="cfg">{"team": "Encuentros Angular", "people": [{"id": "o1a1j6j", "name": "Abner", "aliases": ["ABNER"]}, {"id": "um6fwc6", "name": "Fran R.", "aliases": ["FRAN", "FRAN R", "FRANCISCA"]}, {"id": "jpp1ky3", "name": "Gonzalo", "aliases": ["GONZALO", "GONZA"]}, {"id": "f8v0qcm", "name": "Claudia", "aliases": ["CLAUDIA", "CLAU"]}, {"id": "1rkupxw", "name": "Carolina O.", "aliases": ["CARO O", "CARO", "CAROLINA O"]}, {"id": "f9o2h4r", "name": "Carolina R.", "aliases": ["CARO R", "CAROLINA R"]}, {"id": "qh7aw8y", "name": "Raúl", "aliases": ["RAUL"]}, {"id": "t6spls4", "name": "Miguel", "aliases": ["MIGUEL", "MIGUE"]}, {"id": "mnv3jau", "name": "Boris", "aliases": ["BORIS"]}, {"id": "pkt75al", "name": "Carmen", "aliases": ["CARMEN"]}, {"id": "nxn7ftq", "name": "Paula", "aliases": ["PAULA", "PAU"]}, {"id": "ec146xq", "name": "Paulina", "aliases": ["PAULINA", "PAULI"]}, {"id": "zdtotr9", "name": "Yuliette", "aliases": ["YULI", "YULIETTE"]}, {"id": "z2q8ano", "name": "Alejandra", "aliases": ["ALE", "ALEJANDRA"]}, {"id": "2bl8wqy", "name": "Muriel", "aliases": ["MURIEL", "MURI"]}, {"id": "cristob", "name": "Cristóbal", "aliases": ["CRISTOBAL", "CRIS"]}, {"id": "frang01", "name": "Fran G.", "aliases": ["FRAN G"]}, {"id": "clauo01", "name": "Clau O.", "aliases": ["CLAU O"]}, {"id": "lisset1", "name": "Lissette", "aliases": ["LISS", "LISSET", "LISSETE", "LISSETTE"]}, {"id": "sofia01", "name": "Sofía", "aliases": ["SOFI", "SOFIA"]}, {"id": "samuel1", "name": "Samuel", "aliases": ["SAMUEL"]}, {"id": "albert1", "name": "Alberto", "aliases": ["ALBERTO"]}], "tasks": [{"id": "n6vqeyu", "name": "Aseo inicial", "detail": "Limpieza Baño, Limpieza: Salón (barrer, ordenar, trapear piso) , Ampliación y acceso. Colocar las sillas", "icon": "🧹", "arrive": "16:30"}, {"id": "6ob9rfy", "name": "Coffee", "detail": "Montar mesa con su mantel, cosas del coffee (tasas, cucharas café azúcar y extras) colocar hervidor", "icon": "☕", "arrive": "17:00"}, {"id": "e0yb1nn", "name": "Intercesión", "detail": "Oración de intercesión previa a la reunión", "icon": "🙏", "arrive": "16:30"}, {"id": "zy7y50o", "name": "Bienvenida", "detail": "Recibir de forma acogedora a cada persona que llega a la reunión. (dar indicaciones básicas a las personas nuevas)", "icon": "👋", "arrive": "17:15"}, {"id": "kbqwfbi", "name": "Alabanza", "detail": "Alabanza inicial y final de la reunión, montaje y desmontaje de equipos", "icon": "🎸", "arrive": "16:00"}, {"id": "5i6bxoi", "name": "Animación", "detail": "Preparar y dirigir la animacion inicial y final de la reunión, dar avisos, saludar a personas nuevas, presentar testimonios y a  la persona que comparte el tema, generar cercania y promover los valores y cultura de la Iglesia", "icon": "🎤", "arrive": "17:15"}, {"id": "cz5emj8", "name": "Tema", "detail": "Predica y ministración", "icon": "📖", "arrive": "17:30"}, {"id": "z519a1l", "name": "Kids", "detail": "Reunión de niños", "icon": "🧸", "arrive": "17:30"}, {"id": "cr2hu0q", "name": "Preadolescentes", "detail": "Reunión de preadolescentes", "icon": "🎒", "arrive": "17:30"}, {"id": "7w8olrw", "name": "Adolescentes", "detail": "Reunión de adolescentes", "icon": "🎧", "arrive": "17:30"}], "sheetCols": {"n6vqeyu": "ASEO", "6ob9rfy": "COFFEE", "e0yb1nn": "INTERCES", "zy7y50o": "BIENVENIDA", "kbqwfbi": "ALABANZA", "5i6bxoi": "ANIMACION", "cz5emj8": "TEMA", "z519a1l": "KIDS", "cr2hu0q": "PREADOLESC", "7w8olrw": "^ADOLESC"}}</script>
+<script type="application/json" id="snap">{"fetchedAt": "2026-11-10T15:50:00Z", "values": [["REUNIONES ANGULAR 2026"], ["MES", "DÍA", "ASEO INICIAL    ", "PREPARACIÓN COFFEE         ", "INTERCESIÓN       ", "BIENVENIDA      ", "ALABANZA ", "ANIMACIÓN     ", "TEMA      \n", "DETALLES ESPECIAL", "", "KIDS", "PREADOLESCENTES", "ADOLESCENTES"], ["ENERO", "3", "-", "-", "-", "-", "-", "-", "-", "-", "", "-", "-", "-"], ["", "10", "PAULA", "PAULINA", "RAÚL", "-", "MIGUEL", "PAULINA- PAULA", "ABNER", "-", "", "CARO R", "MURIEL Y ALE", "-"], ["", "17", "RAÚL", "CLAUDIA", "RAÚL", "CARO O", "GONZALO", "CARO R -  CRISTÓBAL", "ABNER", "-", "", "YULI", "MURIEL Y ALE", "-"], ["", "24", "CLAUDIA", "PAULA", "RAÚL", "PAULA", "GONZALO", "GONZALO", "MIGUEL", "-", "", "RAÚL - CARO R", "MURIEL Y ALE", "-"], ["", "31", "ENFA  EN CONCEPCIÓN ", "", "", "", "", "", "", "\"Entrenamiento en el Nuevo Modelo y Programa de Discipulado\"", "", "RAÚL - CARO R", "MURIEL Y ALE", "-"], ["FEBRERO", "7", "RAÚL", "CLAUDIA", "BORIS - CARMEN ", "RAÚL", "GONZALO", "-", "ABNER", "-", "", "RAÚL - CARO R", "MURIEL Y ALE", "-"], ["", "14", "YULI", "CARO O", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "-", "ABNER", "-", "", "YULI", "MURIEL Y ALE", "-"], ["", "21", "PAULINA", "PAULA", "BORIS - CARMEN ", "CARO O", "GONZALO", "PAULINA- PAULA", "ABNER", "Reunion Matrimonios y parejas", "", "RAÚL - CARO R", "MURIEL Y ALE", "-"], ["", "28", "YULI", "PAULINA", "BORIS - CARMEN ", "PAULINA", "GONZALO", "ABNER", "ABNER", "Reunión Equipo ", "", "YULI", "MURIEL Y ALE", "-"], ["MARZO", "7", "PAULA", "RAÚL", "BORIS - CARMEN ", "PAULINA", "ABNER ", "ALEJANDRA - LISSET - SOFÍA", "ABNER", "-", "", "RAÚL - CARO R", "ABNER Y FRAN", "CRIS- PAU"], ["", "14", "RAÚL", "CLAUDIA", "BORIS - CARMEN ", "CARO O", "GONZALO", "SAMUEL", "ABNER", "-", "", "YULI", "ALE", "-"], ["", "21", "CLAUDIA", "CARO O", "BORIS - CARMEN ", "RAÚL", "MIGUEL", "CARO R - CRISTOBAL", "PAULINA ", "Reunion Matrimonios y parejas", "", "RAÚL - CARO R", "MURIEL ", "CRIS- PAU"], ["", "28", "YULI", "PAULINA", "RAÚL", "MURIEL", "GONZALO", "YULI - FRAN G", "ABNER", "Reunión Equipo ", "", "YULI", "ABNER Y FRAN ", "-"], ["ABRIL", "4", "SEMANA SANTA", "", "", "", "", "", "", "Delegaciones especiales", "", "SEMANA SANTA RAÚL-ABNER"], ["", "11", "RAÚL", "CARO O", "BORIS - CARMEN ", "PAULA", "GONZALO", "CARO O - MIGUEL", "ABNER", "-", "", "YULI", "", "CRIS- PAU"], ["", "18", "PAULINA", "PAU", "BORIS - CARMEN ", "CARO O", "GONZALO", "CARO R- CRISTOBAL", "ABNER", "Reunion Matrimonios y parejas", "", "RAÚL - CARO R", "", "CRIS- PAU"], ["", "25", "CLAUDIA", "RAÚL", "BORIS - CARMEN ", "PAULINA", "GONZALO", "CLAUDIA", "ABNER", "-", "", "YULI"], ["MAYO", "2", "RAÚL", "CLAUDIA", "BORIS - CARMEN ", "RAÚL", "GONZALO", "ALE-LISS-SOFI", "ABNER", "-", "", "RAÚL - CARO R", "", "PAU"], ["", "9", "PAULA", "PAULINA", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "FRAN G-YULI ", "ABNER", "-", "", "DÍA DE LA MADRE YULI - MURI"], ["", "16", "YULI", "CARO O", "BORIS - CARMEN ", "PAULA", "GONZALO", "CARO R-CRISTOBAL", "ABNER", "Reunion Matrimonios y parejas", "", "YULI", "", "CRIS"], ["", "23", "PAULINA", "PAU", "BORIS - CARMEN ", "CARO O", "GONZALO", "MURI-ALE", "ABNER", "-", "", "RAÚL - CARO R"], ["", "30", "CLAUDIA", "RAÚL", "BORIS - CARMEN ", "PAULINA", "GONZALO", "CLAU-GONZALO", "ABNER", "Reunión Equipo ", "", "YULI"], ["JUNIO", "6", "YULI", "CLAUDIA", "BORIS - CARMEN ", "RAÚL", "GONZALO", "ALE-SOFI-LISS", "ABNER", "-", "", "YULI", "", "CRIS- PAU"], ["", "13", "PAULA", "PAULINA", "BORIS - CARMEN ", "CLAUDIA", "MIGUEL", "PAU", "ABNER", "-", "", "RAÚL - CARO R"], ["", "20", "RAÚL", "CARO O", "BORIS - CARMEN ", "PAULA", "GONZALO", "CARO R - PAULA", "ABNER", "Reunion Matrimonios y parejas", "", "DÍA DEL PADRE CARO R - PAU"], ["", "27", "PAULINA", "PAU", "BORIS - CARMEN ", "CARO O", "GONZALO", "CARO R-CRISTOBAL", "ABNER", "Reunión Equipo ", "", "YULI"], ["JULIO", "4", "ENCUENTRO ANGULAR", "", "", "", "", "", "", "CCP", "", "ENCUENTRO ANGULAR"], ["", "11", "RAÚL", "CLAUDIA", "BORIS - CARMEN ", "CARO O", "GONZALO", "FRAN G-YULI ", "ABNER", "-", "", "RAÚL - CARO R"], ["", "18", "YULI", "PAULINA", "BORIS - CARMEN ", "PAULINA ", "GONZALO", "ALE-LISS-SOFI", "ABNER", "Reunion Matrimonios y parejas", "", "YULI"], ["", "25", "CLAUDIA", "CARO O", "BORIS - CARMEN ", "RAÚL", "GONZALO", "MURI- ALE", "ABNER", "Reunión Equipo ", "", "RAÚL - CARO R"], ["AGOSTO", "1", "ALE", "RAÚL", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "PAULI- PAU", "ABNER", "-", "", "YULI"], ["", "8", "PAULA", "PAULINA", "BORIS - CARMEN ", "PAULA", "GONZALO", "CLAU-GONZALO", "ABNER", "-", "", "DÍA DEL NIÑO CARO O - CLAU O"], ["", "15", "RAÚL", "ALE", "BORIS - CARMEN ", "ALE", "GONZALO", "CARO R-CRISTOBAL", "ABNER", "-", "", "RAÚL - CARO R"], ["", "22", "PAULINA", "PAULA", "BORIS - CARMEN ", "PAULINA ", "GONZALO", "ALE-LISS-SOFI", "ABNER", "Reunion Matrimonios y parejas", "", "YULI"], ["", "29", "YULI", "CLAUDIA", "BORIS - CARMEN ", "CARO O", "GONZALO", "FRAN G-YULI ", "ALBERTO", "Invitados Alberto Y Fany", "", "RAÚL - CARO R", "", "CINE"], ["SEPTIEMBRE", "5", "CLAUDIA", "CARO O", "BORIS - CARMEN ", "RAÚL", "GONZALO", "-", "ABNER", "-", "", "YULI"], ["", "12", "YULI", "RAÚL", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "-", "ABNER", "Reunion Matrimonios y parejas", "", "FIESTAS PATRIAS CRIS - ALE"], ["", "19", "ALE", "PAULINA", "BORIS - CARMEN ", "PAULA", "GONZALO", "-", "ABNER", "-", "", "RAÚL - CARO R"], ["", "26", "RAÚL", "PAULINA", "BORIS - CARMEN ", "PAULINA", "GONZALO", "-", "ABNER", "Reunión Equipo ", "", "RAÚL - CARO R", "", "CRIS"], ["OCTUBRE", "3", "PAULA", "CLAUDIA", "BORIS - CARMEN ", "CARO O", "GONZALO", "CARO- MIGUE", "ABNER", "-", "", "", "", "PAU"], ["", "10", "PAULINA", "PAULA", "BORIS - CARMEN ", "PAULA", "GONZALO", "MURI- ALE", "ABNER", "-", "", "YULI"], ["", "17", "CLAUDIA", "CARO O", "BORIS - CARMEN ", "RAÚL", "GONZALO", "CARO R- CRIS", "ABNER", "Reunion Matrimonios y parejas", "", "RAÚL - CARO R"], ["", "24", "ALE", "RAÚL", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "ALE-LISS-SOFI", "ABNER", "Reunión Equipo ", "", "RAÚL - CARO R"], ["", "31", "PAULA", "PAULINA", "BORIS - CARMEN ", "PAULA", "GONZALO", "CLAU-GONZALO", "ABNER", "", "", "YULI"], ["NOVIEMBRE", "7", "YULI", "ALE", "BORIS - CARMEN ", "ALE", "GONZALO", "PAULI- PAU", "ABNER", "-", "", "RAÚL - CARO R"], ["", "14", "RAÚL", "CLAUDIA", "BORIS - CARMEN ", "CARO O", "GONZALO", "CARO R- CRIS", "ABNER", "-", "", "YULI"], ["", "21", "PAULINA", "PAULA", "BORIS - CARMEN ", "PAULINA ", "GONZALO", "ALE-LISS-SOFI", "ABNER", "Reunion Matrimonios y parejas", "", "RAÚL - CARO R"], ["", "28", "CLAUDIA", "CARO O", "BORIS - CARMEN ", "RAÚL", "GONZALO", "MURI- ALE", "ABNER", "-", "", "YULI"], ["DICIEMBRE", "5", "ALE", "RAÚL", "BORIS - CARMEN ", "CLAUDIA", "GONZALO", "CARO- MIGUE", "ABNER", "-", "", "YULI"], ["", "12", "PAULA", "PAULINA", "BORIS - CARMEN ", "PAULA", "GONZALO", "CLAU-GONZALO", "ABNER", "-", "", "RAÚL - CARO R"], ["", "19", "YULI", "ALE", "BORIS - CARMEN ", "ALE", "GONZALO", "PAULI- PAU", "ABNER", "Reunion Matrimonios y parejas", "", "YULI"], ["", "26", "SUSPENDIDA (NAVIDAD)", "", "", "", "", "", "", "-"]]}</script>
+<script>
+(() => {
+// La planilla se lee en vivo cada vez que alguien abre la app.
+const SHEET_ID="1WTivmvB2Fx8Bz6ip6qaAXsuG8J5hYiApbu7BMdh-Kh4";
+const TAB_PROG="PROGRAMACIÓN", TAB_DELEG="DELEGACIONES";
+const csvURL=tab=>`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=0&sheet=${encodeURIComponent(tab)}&t=${Date.now()}`;
+
+const COLORS=["#1f6d63","#b5562b","#4b5fa8","#8a4f9e","#2f7f3b","#a8742a","#b03a62","#357f9c","#6b6f2a","#5a4ea0","#9a3f3f","#2d6a8a"];
+const MONTHS=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const MONTHS_L=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MONTH_IDX={ENERO:0,FEBRERO:1,MARZO:2,ABRIL:3,MAYO:4,JUNIO:5,JULIO:6,AGOSTO:7,SEPTIEMBRE:8,SETIEMBRE:8,OCTUBRE:9,NOVIEMBRE:10,DICIEMBRE:11};
+const STOP=new Set(["CINE","NAVIDAD","SUSPENDIDA","SUSPENDIDO","SEMANA","SANTA","ENCUENTRO","DIA","FIESTAS","PATRIAS","EQUIPO","TODOS","INVITADOS","INVITADO","REUNION","ENFA","ESPECIAL","ESPECIALES","ANGULAR","SIN","REU","POR","DEFINIR","CONGRESO","VIGILIA","CCP"]);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/["“”]/g,"").replace(/\s+/g," ").trim();
+const isEmpty=v=>{const t=String(v??"").trim();return !t||/^-+$/.test(t)};
+const clean=v=>String(v??"").replace(/["“”]/g,"").replace(/\s+/g," ").trim();
+function titleCase(s){return s.toLowerCase().split(" ").map(w=>w.length===1?w.toUpperCase()+".":w[0].toUpperCase()+w.slice(1)).join(" ")}
+
+function mondayOf(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-(x.getDay()+6)%7);return x}
+function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function weeksBetween(a,b){return Math.round((b-a)/(7*864e5))}
+function currentMonday(){const t=new Date();return mondayOf(t.getDay()===0?addDays(t,1):t)}
+function fmtStamp(iso){const d=new Date(iso);if(isNaN(d))return"";return `${d.getDate()} ${MONTHS[d.getMonth()]}, ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}
+
+// ---- CSV ----
+function parseCSV(t){const rows=[];let row=[],f="",q=false;for(let i=0;i<t.length;i++){const c=t[i];
+  if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c==='"')q=true;else if(c===","){row.push(f);f=""}else if(c==="\n"||c==="\r"){if(c==="\r"&&t[i+1]==="\n")i++;row.push(f);rows.push(row);row=[];f=""}else f+=c}
+  if(f!==""||row.length){row.push(f);rows.push(row)}return rows}
+
+// ---- Configuración base (personas, delegaciones) ----
+const CFG=JSON.parse(document.getElementById("cfg").textContent);
+let TASKS=CFG.tasks.map(t=>({...t}));
+let PEOPLE=CFG.people.map(p=>({...p}));
+const person=id=>PEOPLE.find(p=>p.id===id);
+function colorOf(id){const i=PEOPLE.findIndex(p=>p.id===id);return COLORS[(i<0?0:i)%COLORS.length]}
+function initials(n){return (n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function aliasMap(){const m={};for(const p of PEOPLE){m[norm(p.name)]=p.id;for(const a of (p.aliases||[]))if(norm(a))m[norm(a)]=p.id}return m}
+
+// Una persona nueva escrita en la planilla aparece sola en la lista de nombres
+function looksLikeName(n){const w=n.split(" ");return w.length<=2&&n.length<=16&&/^[A-Z ]+$/.test(n)&&!w.some(x=>STOP.has(x))}
+function parseCell(raw,amap){
+  const out={ids:[],labels:[]};if(isEmpty(raw))return out;
+  for(let part of String(raw).replace(/\s+/g," ").split(/\s*-\s*|\s+Y\s+|\s*,\s*|\s*\/\s*/i)){
+    part=part.trim();if(!part)continue;const n=norm(part);
+    if(amap[n]){out.ids.push(amap[n]);continue}
+    const w=n.split(" ");let hit=false;
+    for(let k=1;k<w.length;k++){const suf=w.slice(k).join(" ");if(amap[suf]){out.ids.push(amap[suf]);out.labels.push(part.split(" ").slice(0,k).join(" "));hit=true;break}}
+    if(hit)continue;
+    if(looksLikeName(n)){const id="x_"+n.replace(/ /g,"_");if(!person(id))PEOPLE.push({id,name:titleCase(part),aliases:[n]});amap[n]=id;out.ids.push(id);continue}
+    out.labels.push(part);
+  }
+  out.ids=[...new Set(out.ids)];return out;
+}
+function parseProgram(V){
+  const res={};if(!Array.isArray(V))return res;
+  const amap=aliasMap(),cols=CFG.sheetCols||{};
+  let year=new Date().getFullYear();
+  for(const r of V.slice(0,3)){const m=(r||[]).join(" ").match(/20\d\d/);if(m){year=+m[0];break}}
+  const hi=V.findIndex(r=>(r||[]).some(c=>norm(c)==="MES"));if(hi<0)return res;
+  const H=V[hi].map(norm),monCol=H.indexOf("MES");let dayCol=H.indexOf("DIA");if(dayCol<0)dayCol=monCol+1;
+  const colOf={};let detailCol=-1;
+  H.forEach((h,i)=>{if(!h)return;if(h.startsWith("DETALLE")&&detailCol<0)detailCol=i;
+    for(const [tid,kw] of Object.entries(cols)){if(colOf[tid]!=null)continue;if(kw.startsWith("^")?h.startsWith(kw.slice(1)):h.includes(kw))colOf[tid]=i}});
+  const mainIds=Object.keys(colOf).filter(t=>detailCol<0||colOf[t]<detailCol);
+  let mon=-1;
+  for(let r=hi+1;r<V.length;r++){
+    const row=V[r]||[];const mn=norm(row[monCol]);if(MONTH_IDX[mn]!=null)mon=MONTH_IDX[mn];
+    const day=parseInt(String(row[dayCol]??"").replace(/\D/g,""),10);if(mon<0||!day||day>31)continue;
+    const k=key(mondayOf(new Date(year,mon,day)));const wk={assign:{},labels:{}};
+    if(detailCol>=0&&!isEmpty(row[detailCol]))wk.detail=clean(row[detailCol]);
+    const filled=mainIds.filter(t=>!isEmpty(row[colOf[t]]));let evTid=null;
+    if(filled.length===1){const n=norm(row[colOf[filled[0]]]);if(!amap[n]&&!looksLikeName(n)){evTid=filled[0];wk.event=clean(row[colOf[evTid]])}}
+    for(const [tid,ci] of Object.entries(colOf)){if(tid===evTid)continue;const pc=parseCell(row[ci],amap);wk.assign[tid]=pc.ids;if(pc.labels.length)wk.labels[tid]=pc.labels}
+    res[k]=wk;
+  }
+  return res;
+}
+// Hoja opcional DELEGACIONES: DELEGACIÓN | HORA DE LLEGADA | ÍCONO | DESCRIPCIÓN
+function applyDelegSheet(V){
+  if(!Array.isArray(V))return;
+  const hi=V.findIndex(r=>(r||[]).some(c=>norm(c).startsWith("DELEGACION"))&&(r||[]).some(c=>norm(c).includes("HORA")));if(hi<0)return;
+  const H=V[hi].map(norm),cN=H.findIndex(h=>h.startsWith("DELEGACION")),cH=H.findIndex(h=>h.includes("HORA")),cI=H.findIndex(h=>h.startsWith("ICONO")),cD=H.findIndex(h=>h.startsWith("DESCRIP"));
+  for(const row of V.slice(hi+1)){const n=norm(row[cN]);if(!n)continue;
+    const t=TASKS.find(t=>norm(t.name)===n)||TASKS.find(t=>{const kw=(CFG.sheetCols[t.id]||"").replace("^","");return kw&&(kw.startsWith("ADOLESC")?n.startsWith(kw):n.includes(kw))});if(!t)continue;
+    if(cH>=0&&!isEmpty(row[cH])){const m=String(row[cH]).match(/(\d{1,2})[:.](\d{2})/);t.arrive=m?`${m[1].padStart(2,"0")}:${m[2]}`:clean(row[cH])}
+    if(cI>=0&&!isEmpty(row[cI]))t.icon=clean(row[cI]);
+    if(cD>=0&&!isEmpty(row[cD]))t.detail=String(row[cD]).trim();
+  }
+}
+
+// ---- Estado ----
+const S={monday:currentMonday(),me:ls.get("delegaciones.me"),weeks:{},loaded:false,stamp:null,live:false,err:"",allOpen:false};
+function load(src){
+  TASKS=CFG.tasks.map(t=>({...t}));PEOPLE=CFG.people.map(p=>({...p}));
+  applyDelegSheet(src.deleg);S.weeks=parseProgram(src.values);S.stamp=src.fetchedAt;S.loaded=true;
+}
+const icon=(t,sm)=>`<span class="ico${sm?" sm":""}" aria-hidden="true">${esc(t.icon||"⭐")}</span>`;
+const arrive=t=>`<span class="arrive">Hora de llegada: ${t.arrive?`<b>${esc(t.arrive)}</b>`:"por definir"}</span>`;
+function chip(id){const p=person(id);if(!p)return"";return `<span class="chip"><span class="dot" style="background:${colorOf(id)}">${esc(initials(p.name))}</span>${esc(p.name)}</span>`}
+function assignmentFor(mon){const sw=S.weeks[key(mon)],out={};
+  for(const t of TASKS){const ids=((sw&&sw.assign[t.id])||[]).filter(person);out[t.id]={ids,labels:(sw&&sw.labels[t.id])||[],none:!!(sw&&sw.event&&!ids.length)}}return out}
+
+function renderHeader(){
+  const sat=addDays(S.monday,5),diff=weeksBetween(currentMonday(),S.monday);
+  $("#satDate").textContent=`${sat.getDate()} de ${MONTHS_L[sat.getMonth()]}`;
+  $("#satNote").innerHTML=diff===0?"Este sábado":(diff===1?"Próximo sábado":diff===-1?"Sábado pasado":String(sat.getFullYear()))+` · <button id="goToday">Volver a este sábado</button>`;
+  const sw=S.weeks[key(S.monday)],ev=$("#satEv"),dt=$("#satDet");
+  ev.hidden=!(sw&&sw.event);ev.textContent=(sw&&sw.event)||"";
+  const dtxt=sw?sw.detail:(S.loaded?"La planilla aún no tiene este sábado":"");dt.hidden=!dtxt;dt.textContent=dtxt||"";
+}
+function renderWeek(){
+  if(!S.loaded)return `<p class="loading">Cargando delegaciones…</p>`;
+  const a=assignmentFor(S.monday),sw=S.weeks[key(S.monday)];
+  const used=new Set();Object.values(S.weeks).forEach(w=>Object.values(w.assign).forEach(ids=>ids.forEach(i=>used.add(i))));
+  const sorted=PEOPLE.filter(p=>used.has(p.id)||!p.id.startsWith("x_")).sort((x,y)=>x.name.localeCompare(y.name,"es"));
+  let h=`<div class="list"><div class="card pickme"><label class="eyebrow" for="meSel">¿Quién eres?</label><select id="meSel"><option value="">Selecciona tu nombre…</option>${sorted.map(p=>`<option value="${esc(p.id)}"${S.me===p.id?" selected":""}>${esc(p.name)}</option>`).join("")}</select></div>`;
+  if(S.me&&person(S.me)){
+    const mine=TASKS.filter(t=>a[t.id].ids.includes(S.me));
+    h+=`<h2 style="margin-top:6px">Tus delegaciones</h2>`;
+    h+=mine.length?mine.map(t=>{const others=a[t.id].ids.filter(id=>id!==S.me).map(id=>person(id)&&person(id).name).filter(Boolean);
+      return `<div class="card deleg"><h3>${icon(t)}<span class="tname"><span>${esc(t.name)}</span>${arrive(t)}</span></h3>${t.detail?`<details class="how"><summary>¿En qué consiste?</summary><p class="desc">${esc(t.detail)}</p></details>`:""}${a[t.id].labels.length?`<div class="row">${a[t.id].labels.map(l=>`<span class="lbl">${esc(l)}</span>`).join("")}</div>`:""}${others.length?`<p class="with">Junto a <b>${others.map(esc).join(", ")}</b></p>`:""}</div>`}).join("")
+      :`<div class="card"><p style="margin:0">${sw&&sw.event?`Este sábado hay <b>${esc(sw.event)}</b>. No tienes delegaciones asignadas.`:"No tienes delegaciones este sábado."}</p></div>`;
+  }else h+=`<p class="hint">Elige tu nombre para ver tus delegaciones.</p>`;
+  h+=`<details class="all"${S.allOpen?" open":""}><summary>Ver todas las delegaciones</summary><div class="list">`+TASKS.filter(t=>!a[t.id].none).map(t=>{const r=a[t.id],me=S.me&&r.ids.includes(S.me);
+    return `<div class="card mini${me?" me":""}"><div class="hd"><h3>${icon(t,true)}<span class="tname"><span>${esc(t.name)}</span>${arrive(t)}</span></h3></div><div class="who">${r.ids.map(chip).join("")}${r.labels.map(l=>`<span class="lbl">${esc(l)}</span>`).join("")}${(!r.ids.length&&!r.labels.length)?`<span class="chip empty">Sin asignar</span>`:""}</div></div>`}).join("")+`</div></details></div>`;
+  return h;
+}
+function render(){
+  const det=document.querySelector("details.all");if(det)S.allOpen=det.open;
+  renderHeader();$("#view").innerHTML=renderWeek();
+  $("#foot").textContent=S.err||(S.stamp?(S.live?`Datos de la planilla · actualizados ${fmtStamp(S.stamp)}`:`Sin conexión · mostrando datos del ${fmtStamp(S.stamp)}`):"");
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.id==="prev"){S.monday=addDays(S.monday,-7);render()}else if(b.id==="next"){S.monday=addDays(S.monday,7);render()}else if(b.id==="goToday"){S.monday=currentMonday();render()}});
+document.addEventListener("change",e=>{if(e.target.id==="meSel"){S.me=e.target.value||null;ls.set("delegaciones.me",S.me);render();window.scrollTo(0,0)}});
+
+// ---- Arranque: muestra lo último guardado y luego trae la planilla en vivo ----
+let cached=null;try{cached=JSON.parse(ls.get("delegaciones.cache")||"null")}catch(e){}
+const snap=JSON.parse(document.getElementById("snap").textContent);
+const start=(cached&&cached.fetchedAt>snap.fetchedAt)?cached:snap;
+load(start);render();
+async function fetchTab(tab){const r=await fetch(csvURL(tab),{cache:"no-store"});if(!r.ok)throw new Error("http "+r.status);const t=await r.text();if(/^\s*</.test(t))throw new Error("no csv");return parseCSV(t)}
+async function refresh(){
+  try{
+    const [values,deleg]=await Promise.all([fetchTab(TAB_PROG),fetchTab(TAB_DELEG).catch(()=>null)]);
+    const src={fetchedAt:new Date().toISOString(),values,deleg};
+    load(src);S.live=true;S.err="";ls.set("delegaciones.cache",JSON.stringify(src));
+  }catch(e){S.live=false;S.err=S.stamp?`No se pudo leer la planilla ahora · mostrando datos del ${fmtStamp(S.stamp)}`:"No se pudo leer la planilla. Revisa tu conexión."}
+  render();
+}
+refresh();
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refresh()});
+})();
+</script>
+</body>
+</html>
