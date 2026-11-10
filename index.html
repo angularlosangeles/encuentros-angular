@@ -144,6 +144,8 @@ details.all .list{margin-top:10px}
 .mini.me{border-color:var(--mark);box-shadow:inset 4px 0 0 var(--mark)}
 @media (prefers-reduced-motion: no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
 
+.sat.other{background:var(--line);color:var(--ink)}
+.sat.other .satev{background:var(--ink);color:var(--paper)}
 .loading{text-align:center;color:var(--muted);padding:24px 0}
 </style>
 </head>
@@ -272,6 +274,7 @@ function assignmentFor(mon){const sw=S.weeks[key(mon)],out={};
 function renderHeader(){
   const sat=addDays(S.monday,5),diff=weeksBetween(currentMonday(),S.monday);
   $("#satDate").textContent=`${sat.getDate()} de ${MONTHS_L[sat.getMonth()]}`;
+  document.querySelector(".sat").classList.toggle("other",diff!==0);
   $("#satNote").innerHTML=diff===0?"Este sábado":(diff===1?"Próximo sábado":diff===-1?"Sábado pasado":String(sat.getFullYear()))+` · <button id="goToday">Volver a este sábado</button>`;
   const sw=S.weeks[key(S.monday)],ev=$("#satEv"),dt=$("#satDet");
   ev.hidden=!(sw&&sw.event);ev.textContent=(sw&&sw.event)||"";
